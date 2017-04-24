@@ -1,15 +1,15 @@
-## Last commit: 2017-03-14 12:01:12 UTC by mab
+## Last changed: 2017-04-24 13:47:22 UTC
 version 14.1R4.9;
 system {
     root-authentication {
-        encrypted-password "$1$gjKQdWCJ$dYlWeP6CI2eWBCt4Dz.hH0"; ## SECRET-DATA
+        encrypted-password "$1$gjKQdWCJ$dYlWeP6CI2eWBCt4Dz.hH0";
     }
     login {
         user mab {
             uid 2000;
             class super-user;
             authentication {
-                encrypted-password "$1$56iSMRiJ$l4F0kQnMFk2SeALRTmWz30"; ## SECRET-DATA
+                encrypted-password "$1$56iSMRiJ$l4F0kQnMFk2SeALRTmWz30";
             }
         }
     }
@@ -55,7 +55,7 @@ interfaces {
     }
 }
 routing-options {
-    forwarding-table {                  
+    forwarding-table {
         export bgp-ecmp;
     }
 }
