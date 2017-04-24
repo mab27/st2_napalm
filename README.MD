@@ -312,7 +312,7 @@ result:
   stdout: ''
 ```
 
-- Display ip adressing of all interfaces:
+- Display IP adressing of all interfaces:
 ```
 mab@mab-infra:~/automation/st2_napalm_junos$ sudo st2 run napalm.get_interfaces hostname=vmx1 ipaddresses=true
 ..
@@ -640,6 +640,57 @@ policy-options {
   stdout: ''
 ```
 
+- Perform a configuration consitency check (compare actual config to a golden config stored on a github repo):
+```
+mab@mab-infra:/opt/stackstorm/packs/napalm$ sudo st2 run napalm.check_consistency hostname=vmx1
+...
+id: 58fe14f27cae220853c42541
+status: succeeded
+parameters: 
+  hostname: vmx1
+result: 
+  exit_code: 0
+  result:
+    deviation: true
+    diff_contents: "--- 
++++ 
+@@ -1,13 +1,16 @@
++
+ version 14.1R4.9;
+ system {
+     root-authentication {
+-        encrypted-password "$1$gjKQdWCJ$dYlWeP6CI2eWBCt4Dz.hH0";     }
++        encrypted-password "$1$gjKQdWCJ$dYlWeP6CI2eWBCt4Dz.hH0";
++    }
+     login {
+         user mab {
+             uid 2000;
+             class super-user;
+             authentication {
+-                encrypted-password "$1$56iSMRiJ$l4F0kQnMFk2SeALRTmWz30";             }
++                encrypted-password "$1$56iSMRiJ$l4F0kQnMFk2SeALRTmWz30";
++            }
+         }
+     }
+     services {
+@@ -52,7 +55,7 @@
+     }
+ }
+ routing-options {
+-    forwarding-table {                  
++    forwarding-table {
+         export bgp-ecmp;
+     }
+ }
+@@ -82,4 +85,4 @@
+     policy-statement bgp-out {
+         then accept;
+     }
+-}+}
+"
+  stderr: ''
+  stdout: ''
+```
 - Get the facts from on a device:
 ```
 mab@mab-infra:~/automation/st2_napalm_junos$ sudo st2 run napalm.get_facts hostname=vmx1
@@ -703,7 +754,7 @@ result:
   stdout: ''
 ```
 
-### connectivity:
+### Connectivity:
 - Perform a ping (to a specified destimation) on a device:
 ```
 mab@mab-infra:~/automation/st2_napalm_junos$ sudo st2 run napalm.ping hostname=vmx1 destination=192.168.0.10
@@ -739,10 +790,36 @@ result:
   stdout: ''
 ```
 
+- Obtain the BGP neighbors for a device:
+```
+mab@mab-infra:/opt/stackstorm/packs/napalm$ sudo st2 run napalm.get_bgp_neighbors hostname=vmx1 
+..
+id: 58fe19117cae220853c42547
+status: succeeded
+parameters: 
+  hostname: vmx1
+result: 
+  exit_code: 0
+  result:
+    raw:
+      172.16.0.40:
+        address_family: {}
+        description: ''
+        is_enabled: true
+        is_up: false
+        local_as: 101
+        remote_as: 102
+        remote_id: ''
+        uptime: 9520
+  stderr: ''
+  stdout: ''
+```
+
 - Get the route for a specific destination: 
 ```
 
 ```
+
 
 ## Rules:
 
