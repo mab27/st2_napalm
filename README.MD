@@ -438,7 +438,24 @@ result:
 
 - Show the LLDP neighbors:
 ```
-
+mab@mab-infra:~/automation/st2_napalm_junos$ sudo st2 run napalm.get_lldp_neighbors hostname=vmx1
+..
+id: 58ff7a777cae22077ffd0cdb
+status: succeeded
+parameters: 
+  hostname: vmx1
+result: 
+  exit_code: 0
+  result:
+    raw:
+      ge-0/0/0:
+      - hostname: localhost
+        port: 00:0c:29:8f:3e:11
+      ge-0/0/1:
+      - hostname: localhost
+        port: 00:0c:29:8f:3e:1b
+  stderr: ''
+  stdout: ''
 ```
 
 
