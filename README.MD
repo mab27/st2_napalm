@@ -691,6 +691,30 @@ result:
   stderr: ''
   stdout: ''
 ```
+
+```
+mab@mab-infra:~/automation/st2_napalm_junos$ sudo st2 run napalm.check_consistency hostname=vmx1
+..
+id: 58fe20607cae220853c42565
+status: succeeded
+parameters: 
+  hostname: vmx1
+result: 
+  exit_code: 0
+  result:
+    deviation: true
+    diff_contents: "--- 
++++ 
+@@ -1,3 +1,4 @@
++
+ version 14.1R4.9;
+ system {
+     root-authentication {
+"
+  stderr: ''
+  stdout: ''
+```
+
 - Get the facts from on a device:
 ```
 mab@mab-infra:~/automation/st2_napalm_junos$ sudo st2 run napalm.get_facts hostname=vmx1
@@ -824,24 +848,6 @@ result:
 ## Rules:
 
 ### Webhooks: 
-- **webhook_cfg_interface**: From Webhook payload, fire the action to configure an interface.
-- **webhook_del_interface**: From Webhook payload, fire the action to delete an  interface.
-
-- **webhook_cfg_ip_route**: From Webhook payload, fire the action to configure an ip route.
-- **webhook_del_ip_route**: From Webhook payload, fire the action to delete an ip route.
-
-- **webhook_cfg_ebgp**: From Webhook payload, fire the action to configure an ebgp peering.
-- **webhook_del_ebgp**: From Webhook payload, fire the action to delete an ebgp peering.
-- **webhook_cfg_bgp_adv_prefix**: From Webhook payload, fire the action to configure an bgp prefix advertisement.
-- **webhook_del_bgp_adv_prefix**: From Webhook payload, fire the action to delete an bgp prefix advertisement.
-
-- **webhook_cfg_fw_rule**: From Webhook payload, fire the action to configure a FW rule.
-- **webhook_del_fw_rule**: From Webhook payload, fire the action to delete a FW rule.
-- **webhook_cfg_fw_instance**: From Webhook payload, fire the action to apply a FW instance.
-- **webhook_del_fw_instance**: From Webhook payload, fire the action to remove a FW instance.
-
-- **webhook_cfg_ipsec**: From Webhook payload, fire the action to configure an ipsec tunnel.
-- **webhook_del_ipsec**: From Webhook payload, fire the action to delete an ipsec tunnel.
 
 ### What are Webhooks: 
 - Systems that push data to the ST2 API when an event you are interested in occurs.
@@ -886,148 +892,3 @@ st2 execution list -n 5
 ```
 
 ### Examples:
-
-- Trigger the **cfg_ip_route** rule:
-send the call via cURL command:
-```
-curl -k -H "Content-Type:application/json" -H "X-Auth-Token:$TOKEN" -d '{"task":"cfg_ip_route","deviceIP":"192.168.0.10","subnet":"70.70.70.0/24","nextHop":"172.16.0.20"}' http://localhost:9101/v1/webhooks/vrouter
-```
-
-- Trigger the **del_ip_route** rule:
-send the call via cURL command:
-```
-curl -k -H "Content-Type:application/json" -H "X-Auth-Token:$TOKEN" -d '{"task":"del_ip_route","deviceIP":"192.168.0.10","subnet":"70.70.70.0/24"}' http://localhost:9101/v1/webhooks/vrouter
-```
-
-- Trigger the **cfg_ebgp** rule:
-send the call via cURL command:
-```
-curl -k -H "Content-Type:application/json" -H "X-Auth-Token:$TOKEN" -d '{"task":"cfg_ebgp","eastDeviceIP":"192.168.0.10","eastASN":"65010","eastPeeringIP":"172.16.0.10", "westDeviceIP":"192.168.0.20","westASN":"65020","westPeeringIP":"172.16.0.20"}' http://localhost:9101/v1/webhooks/vrouter
-```
-
-- Trigger the **del_bgp** rule:
-send the call via cURL command:
-```
-curl -k -H "Content-Type:application/json" -H "X-Auth-Token:$TOKEN" -d '{"task":"del_bgp","deviceIP":"192.168.0.10"}' http://localhost:9101/v1/webhooks/vrouter
-```
-
-- Trigger the **cfg_fw_rule** rule:
-
-First create a file ```body_cfg_fw_rule_1_1.json```:
-```
-{
-    "task": "cfg_fw_rule",
-    "deviceIP": "192.168.0.10",
-    "rule_set_name": "fw-1",
-    "rule_number": "1",
-    "rule_filter": {
-    	"action": "accept",
-    	"state": "enable",
-    	"protocol": "tcp",
-    	"dst_addr": "172.60.10.0/24",
-    	"dst_port": "80", 
-    	"src_addr": "10.10.10.0/8"
-    }
-}
-```
-Then, send the call via cURL command:
-```
-curl -k -H "Content-Type:application/json" -H "X-Auth-Token:$TOKEN" -d @body_cfg_fw_rule_1_1.json http://localhost:9101/v1/webhooks/vrouter
-```
-
-- Trigger again the **cfg_fw_rule** rule:
-
-First create a file ```body_cfg_fw_rule_1_2.json```:
-```
-{
-    "task": "cfg_fw_rule",
-    "deviceIP": "192.168.0.10",
-    "rule_set_name": "fw-1",
-    "rule_number": "2",
-    "rule_filter": {
-        "action": "accept",
-        "state": "enable",
-        "protocol": "tcp",
-        "dst_addr": "172.60.10.0/24",
-        "dst_port": "80", 
-        "src_addr": "10.10.10.0/8"
-    }
-}
-```
-Then, send the call via cURL command:
-```
-curl -k -H "Content-Type:application/json" -H "X-Auth-Token:$TOKEN" -d @body_cfg_fw_rule_1_2.json http://localhost:9101/v1/webhooks/vrouter
-```
-
-- Trigger the **del_fw_rule** rule:
-
-First create a file ```body_del_fw_rule_1_2.json```:
-```
-{
-    "task": "cfg_fw_rule",
-    "deviceIP": "192.168.0.10",
-    "rule_set_name": "fw_1",
-    "rule_number": "1"
-}
-```
-Then, send the call via cURL command:
-```
-curl -k -H "Content-Type:application/json" -H "X-Auth-Token:$TOKEN" -d @body_del_fw_rule_1_2.json http://localhost:9101/v1/webhooks/vrouter
-```
-
-- Trigger the **apply_fw_instance** rule:
-
-First create a file ```body_cfg_fw_instance_1.json```:
-```
-{
-    "task": "apply_fw_instance",
-    "deviceIP": "192.168.0.10",
-    "rule_set_name": "fw-1",
-    "intfNum": "dp0p38p1",
-    "direction": "out"
-}
-```
-Then, send the call via cURL command:
-```
-curl -k -H "Content-Type:application/json" -H "X-Auth-Token:$TOKEN" -d @body_cfg_fw_instance_1.json http://localhost:9101/v1/webhooks/vrouter
-```
-- Trigger the **remove_fw_instance** rule:
-
-First create a file ```body_del_fw_instance_1.json```:
-```
-{
-    "task": "remove_fw_instance",
-    "deviceIP": "192.168.0.10",
-    "rule_set_name": "fw-1",
-    "intfNum": "dp0p38p1",
-    "direction": "out"
-}
-```
-Then, send the call via cURL command:
-```
-curl -k -H "Content-Type:application/json" -H "X-Auth-Token:$TOKEN" -d @body_del_fw_instance_1.json http://localhost:9101/v1/webhooks/vrouter
-```
-
-## ChatOps:
-### What is Chatops:
-- It is about humans talking to ChatBots (and the other way around).
-- A more formal definition would be the concept of delegating responsibility of tasks/actions to an internal robot that also sits inline with your existing company.
-- Simply put, ChatOps let you take operational and development workflows and expose them as commands that can be executed in a company chat room.
-- The benefits are numerous: Shared CLI to help for incident management, enable team scaling by allowing automation consumable in a easy way by every team member (Makes everyone more powerfull) etc ...
-
-### ChatOps in this pack:
-- StackStorm facilitates the introduction of ChatOps in your organisation by diffeent integrations with pupular chat tools and bots.
-- Any action/workflow you want to expose in a chatroom will have an action-alias, in the ```aliases``` folder.
-- The demo in this pack has been realised using Slack as a chat tool and Hu-Bot as a bot. 
-
-### Examples:
-Before trying any conversation with your bot, check its online presence in the chatroom, the bot must appear on-line to be able to communicate with ST2.
-And also type in the two following commands to restart the ChatOps service, this is often required every time you reconnect to you chatroom:
-```
-st2ctl reload --register-aliases
-sudo service st2chatops restart
-```
-- Show the firewall config on a device, type this in the chatroom:
-```
-!show fw on 192.168.0.10 
-```
