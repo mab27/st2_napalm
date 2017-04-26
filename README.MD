@@ -11,7 +11,11 @@
 - You can retrive the pack from [stackstorm-exchange](https://exchange.stackstorm.org/) website or direclty on the [NAPALM pack github repo](https://github.com/StackStorm-Exchange/stackstorm-napalm)
 
 ## How to install this pack:
-
+- Show all interfaces:
+```
+st2 pack install napalm
+```
+Then  follow the instructions on the README from the repo.
 
 ## Getting started with actions of the pack:
 
@@ -862,9 +866,7 @@ result:
 ```
 
 
-## Rules:
-
-### Webhooks: 
+## Webhooks: 
 
 ### What are Webhooks: 
 - Systems that push data to the ST2 API when an event you are interested in occurs.
@@ -883,7 +885,20 @@ These allows the rule to check if the event matches any of its criteria, if yes,
 ### Pre-requisistes (Before trying rules):
 - Make sure the rules are registered and available by list the available rules for the pack:
 ```
-st2 rule list -p vyatta
+mab@mab-infra:/opt/stackstorm/packs/napalm/rules$ sudo st2 rule list -p napalm
++-----------------------------+--------+-----------------------------------+---------+
+| ref                         | pack   | description                       | enabled |
++-----------------------------+--------+-----------------------------------+---------+
+| napalm.bgp_prefix_exceeded  | napalm | Webhook which handles a BGP       | True    |
+|                             |        | neighbour exceeding it's prefix   |         |
+|                             |        | limit                             |         |
+| napalm.configuration_change | napalm | Webhook which handles when a      | True    |
+|                             |        | device has been configured and    |         |
+|                             |        | changes commited                  |         |
+| napalm.interface_down       | napalm | Webhook which handles an          | True    |
+|                             |        | interface going down on a network |         |
+|                             |        | device.                           |         |
++-----------------------------+--------+-----------------------------------+---------+
 ```
 - If needed, restart the rules service:
 ```
@@ -909,3 +924,80 @@ st2 execution list -n 5
 ```
 
 ### Examples:
+
+- Trigger the **bgp_prefix_exceeded** rule: send the call via cURL command:
+```
+curl -k -H "Content-Type:application/json" -H "X-Auth-Token: **$TOKEN**" -d '{"logsource":"vmx1","message":"BGP-EXCEED-LIMIT","neighbour":"192.168.0.40","asnum":"102","prefixes":"50"}' http://localhost:9101/v1/webhooks/napalm_bgp_prefix_exceeded
+```
+- Check if the rule has been enforced:
+```
+mab@mab-infra:/opt/stackstorm/packs/napalm/rules$ sudo st2 rule-enforcement list -n 5+--------------------------+-----------------------+-----------------------+-----------------------+-----------------------+
+| id                       | rule.ref              | trigger_instance_id   | execution_id          | enforced_at           |
++--------------------------+-----------------------+-----------------------+-----------------------+-----------------------+
+| 5900dbc37cae22046eaac323 | vyatta.webhook_cfg_ip | 5900dbc27cae22046eaac | 5900dbc37cae22046eaac | Wed, 26 Apr 2017      |
+|                          | _route                | 31f                   | 322                   | 17:41:23 UTC          |
+| 5900dbc97cae22046eaac330 | vyatta.webhook_cfg_ip | 5900dbc97cae22046eaac | 5900dbc97cae22046eaac | Wed, 26 Apr 2017      |
+|                          | _route                | 32c                   | 32f                   | 17:41:29 UTC          |
+| 5900dbcf7cae22046eaac33d | vyatta.webhook_cfg_ip | 5900dbcf7cae22046eaac | 5900dbcf7cae22046eaac | Wed, 26 Apr 2017      |
+|                          | _route                | 335                   | 339                   | 17:41:35 UTC          |
+| 5900dbd57cae22046eaac34a | vyatta.webhook_cfg_ip | 5900dbd57cae22046eaac | 5900dbd57cae22046eaac | Wed, 26 Apr 2017      |
+|                          | _route                | 342                   | 347                   | 17:41:41 UTC          |
+| 5900dc8e7cae22046eaac357 | napalm.bgp_prefix_exc | 5900dc8e7cae22046eaac | 5900dc8e7cae22046eaac | Wed, 26 Apr 2017      |
+|                          | eeded                 | 353                   | 356                   | 17:44:46 UTC          |
++--------------------------+-----------------------+-----------------------+-----------------------+-----------------------+
+```
+
+- Check the details of the trigger:
+```
+mab@mab-infra:/opt/stackstorm/packs/napalm/rules$ sudo st2 trigger-instance get 5900dc8e7cae22046eaac353
++-----------------+--------------------------------------------------------------+
+| Property        | Value                                                        |
++-----------------+--------------------------------------------------------------+
+| id              | 5900dc8e7cae22046eaac353                                     |
+| trigger         | core.f36458c4-f95e-4d17-8efd-9437ae8c5abe                    |
+| occurrence_time | 2017-04-26T17:44:46.386000Z                                  |
+| payload         | {                                                            |
+|                 |     "body": {                                                |
+|                 |         "neighbour": "192.168.0.40",                         |
+|                 |         "prefixes": "50",                                    |
+|                 |         "message": "BGP-EXCEED-LIMIT",                       |
+|                 |         "logsource": "vmx1",                                 |
+|                 |         "asnum": "102"                                       |
+|                 |     },                                                       |
+|                 |     "headers": {                                             |
+|                 |         "Content-Length": "106",                             |
+|                 |         "X-Request-Id":                                      |
+|                 | "b2b9af8c-d459-4169-8a32-eed44df8531c",                      |
+|                 |         "Accept": "*/*",                                     |
+|                 |         "X-Auth-Token": "$TOKEN",  |
+|                 |         "Host": "localhost:9101",                            |
+|                 |         "User-Agent": "curl/7.47.0",                         |
+|                 |         "Content-Type": "application/json"                   |
+|                 |     }                                                        |
+|                 | }                                                            |
+| status          | processed                                                    |
++-----------------+--------------------------------------------------------------+
+```
+
+- Check the details of the action/workflow execution resulted from this trigger (action is failing in this example, but the purpose is to show action firing and arguments passing from webhook to action:
+```
+sudo st2 execution get 5900dc8e7cae22046eaac356
+id: 5900dc8e7cae22046eaac356
+action.ref: napalm.bgp_prefix_exceeded_chain
+parameters: 
+  asnum: '102'
+  hostname: vmx1
+  message: BGP-EXCEED-LIMIT
+  neighbour: 192.168.0.40
+  prefixes: 50
+status: failed (0s elapsed)
+start_timestamp: 2017-04-26T17:44:46.476967Z
+end_timestamp: 2017-04-26T17:44:46.806902Z
+result: 
+  error: Unable to find node with name "show_bgp_neighbours" referenced in "default".
+  traceback: "  File "/opt/stackstorm/st2/local/lib/python2.7/site-packages/st2actions/container/base.py", line 90, in _do_run
+    runner.pre_run()
+  File "/opt/stackstorm/runners/action_chain_runner/action_chain_runner.py", line 279, in pre_run
+    raise runnerexceptions.ActionRunnerPreRunError(e.message)
+"
+```
