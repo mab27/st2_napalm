@@ -927,7 +927,7 @@ st2 execution list -n 5
 
 - Trigger the **bgp_prefix_exceeded** rule: send the call via cURL command:
 ```
-curl -k -H "Content-Type:application/json" -H "X-Auth-Token: **$TOKEN**" -d '{"logsource":"vmx1","message":"BGP-EXCEED-LIMIT","neighbour":"192.168.0.40","asnum":"102","prefixes":"50"}' http://localhost:9101/v1/webhooks/napalm_bgp_prefix_exceeded
+curl -k -H "Content-Type:application/json" -H "X-Auth-Token:$TOKEN" -d '{"logsource":"vmx1","message":"BGP-EXCEED-LIMIT","neighbour":"192.168.0.40","asnum":"102","prefixes":"50"}' http://localhost:9101/v1/webhooks/napalm_bgp_prefix_exceeded
 ```
 - Check if the rule has been enforced:
 ```
