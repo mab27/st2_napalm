@@ -865,7 +865,6 @@ result:
 
 ```
 
-
 ## Getting started with Arista devices:
 
 ### Interfaces:
@@ -895,8 +894,9 @@ result:
 
 ```
 
-
 - Obtain the BGP neighbors for a device:
+```
+
 ```
 
 ### Configuration & facts:
