@@ -1,9 +1,9 @@
 [![Build Status](https://travis-ci.org/mab27/st2_vyatta.svg?branch=master)](https://travis-ci.org/mab27/st2_vyatta)
 
-# Auomating Junos with NAPALM pack from StackStorm
+# NW Automation with NAPALM pack from StackStorm
 
 ## Content of the repo:
-- This repo contains information on how to implement network automation suing NAPALM pack from StackStorm.
+- This repo contains information on how to implement network automation using NAPALM pack from StackStorm.
 - [NAPALM](https://napalm.readthedocs.io/en/latest/index.html) stands for Network Automation and Programmability Abstraction Layer with Multivendor support.
 - It is a Python library that implements a set of functions to interact with different network device Operating Systems using a unified API.
 - NAPALM supports several methods to connect to the devices, to manipulate configurations or to retrieve data.
@@ -11,13 +11,13 @@
 - You can retrive the pack from [stackstorm-exchange](https://exchange.stackstorm.org/) website or direclty on the [NAPALM pack github repo](https://github.com/StackStorm-Exchange/stackstorm-napalm)
 
 ## How to install this pack:
-- Show all interfaces:
+- Use stackstorm command to install the pack (includes git clone, install dependencies, registration etc ...):
 ```
 st2 pack install napalm
 ```
 Then  follow the instructions on the README from the repo.
 
-## Getting started with actions of the pack:
+## Getting started with Juniper devices:
 
 - Configuration:
 
@@ -865,6 +865,66 @@ result:
 
 ```
 
+
+## Getting started with Arista devices:
+
+### Interfaces:
+- Show all interfaces:
+
+```
+
+```
+
+- Display IP adressing of all interfaces:
+```
+
+```
+
+- Show the counters for one specific interface:
+```
+
+```
+
+- Show the ARP table:
+```
+
+```
+
+- Show the LLDP neighbors:
+```
+
+```
+
+
+- Obtain the BGP neighbors for a device:
+```
+
+### Configuration & facts:
+- Show the running configuration on a device:
+```
+
+```
+
+- Perform a configuration consitency check (compare actual config to a golden config stored on a github repo):
+```
+
+```
+
+- Get the facts from on a device:
+```
+
+```
+
+### Connectivity:
+- Perform a ping (to a specified destimation) on a device:
+```
+
+```
+
+- Get the route for a specific destination: 
+```
+
+```
 
 ## Webhooks: 
 
