@@ -17,12 +17,7 @@ Then  follow the instructions on the README from the repo.
 
 ## Getting started with Juniper devices:
 
-- Configuration:
-
-- Validation:
-
-- Device's information:
-
+- 
 
 ### Interfaces:
 - Show all interfaces:
