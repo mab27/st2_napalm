@@ -17,7 +17,7 @@ Then  follow the instructions on the README from the repo.
 
 ## Getting started with Juniper devices:
 
-- 
+- First you need to enable netconf on the Juniper devices you want to manage, as the underlying napalm-plugin  for Junos uses a python  library (pyez) that relies on netconf.
 
 ### Interfaces:
 - Show all interfaces:
