@@ -800,7 +800,7 @@ result:
 ```
 
 ### Connectivity:
-- Perform a ping (to a specified destimation) on a device:
+- Perform a ping (to a specified destination) on a device:
 ```
 mab@mab-infra:~/automation/st2_napalm_junos$ sudo st2 run napalm.ping hostname=vmx1 destination=192.168.0.10
 ...
@@ -835,6 +835,48 @@ result:
   stdout: ''
 ```
 
+- Get the BGP configuration from a device:
+```
+mab@mab-infra:/opt/stackstorm/packs/napalm$ sudo st2 run napalm.get_bgp_config hostname=vmx1
+sh: 0: getcwd() failed: No such file or directory
+.
+id: 590b33557cae2209dd347079
+status: succeeded
+parameters: 
+  hostname: vmx1
+result: 
+  exit_code: 0
+  result:
+    raw:
+      underlay:
+        apply_groups: []
+        description: ''
+        export_policy: bgp-out
+        import_policy: bgp-in
+        local_address: ''
+        local_as: 101
+        multihop_ttl: 0
+        multipath: true
+        neighbors:
+          172.16.0.40:
+            authentication_key: ''
+            description: ''
+            export_policy: ''
+            import_policy: ''
+            local_address: ''
+            local_as: 0
+            nhs: false
+            prefix_limit: {}
+            remote_as: 102
+            route_reflector_client: false
+        prefix_limit: {}
+        remote_as: 0
+        remove_private_as: false
+        type: external
+  stderr: ''
+  stdout: ''
+```
+
 - Obtain the BGP neighbors for a device:
 ```
 mab@mab-infra:/opt/stackstorm/packs/napalm$ sudo st2 run napalm.get_bgp_neighbors hostname=vmx1 
@@ -860,6 +902,61 @@ result:
   stdout: ''
 ```
 
+- Obtain the details on a specific BGP peering:
+```
+mab@mab-infra:/opt/stackstorm/packs/napalm$ sudo st2 run napalm.get_bgp_neighbors_detail hostname=vmx1 neighbor=172.16.0.40
+sh: 0: getcwd() failed: No such file or directory
+..
+id: 590b34517cae2209dd34707c
+status: succeeded
+parameters: 
+  hostname: vmx1
+  neighbor: 172.16.0.40
+result: 
+  exit_code: 0
+  result:
+    raw:
+      inet.0:
+        '102':
+        - accepted_prefix_count: 2
+          active_prefix_count: 0
+          advertised_prefix_count: 2
+          configured_holdtime: 90
+          configured_keepalive: 30
+          connection_state: Established
+          export_policy: bgp-out
+          flap_count: 0
+          holdtime: 90
+          import_policy: bgp-in
+          input_messages: 17
+          input_updates: 2
+          keepalive: 30
+          last_event: RecvKeepAlive
+          local_address: 172.16.0.30
+          local_address_configured: false
+          local_as: 101
+          local_as_prepend: true
+          local_port: 49488
+          messages_queued_out: 0
+          multihop: false
+          multipath: true
+          output_messages: 17
+          output_updates: 1
+          previous_connection_state: OpenConfirm
+          received_prefix_count: 2
+          remote_address: 172.16.0.40
+          remote_as: 102
+          remote_port: 179
+          remove_private_as: false
+          router_id: 40.40.40.40
+          routing_table: inet.0
+          suppress_4byte_as: false
+          suppressed_prefix_count: 0
+          up: true
+  stderr: ''
+  stdout: ''
+```
+
 - Get the route for a specific destination: 
 ```
 
@@ -867,42 +964,237 @@ result:
 
 ## Getting started with Arista devices:
 
+- First you need to enable eAPI on the Arista devices you want to manage. Have a look at: https://eos.arista.com/arista-eapi-101/
+
 ### Interfaces:
 - Show all interfaces:
-
 ```
-
+mab@mab-infra:/opt/stackstorm/packs/napalm$ sudo st2 run napalm.get_interfaces hostname=arista2
+.
+id: 590b440d7cae2209dd3470a0
+status: succeeded
+parameters: 
+  hostname: arista2
+result: 
+  exit_code: 0
+  result:
+    raw:
+      Ethernet1:
+        description: ''
+        is_enabled: true
+        is_up: true
+        last_flapped: 1493917720.2240005
+        mac_address: 00:0C:29:15:43:C8
+        speed: 0
+      Management1:
+        description: ''
+        is_enabled: true
+        is_up: true
+        last_flapped: 1493917718.7550485
+        mac_address: 00:0C:29:A4:5B:E2
+        speed: 1000
+  stderr: ''
+  stdout: ''
 ```
 
 - Display IP adressing of all interfaces:
 ```
+mab@mab-infra:/opt/stackstorm/packs/napalm$ sudo st2 run napalm.get_interfaces hostname=arista2 ipaddresses=true
+.
+id: 590b444e7cae2209dd3470a3
+status: succeeded
+parameters: 
+  hostname: arista2
+  ipaddresses: true
+result: 
+  exit_code: 0
+  result:
+    raw:
+      Ethernet1:
+        ipv4:
+          172.16.0.80:
+            prefix_length: 24
+        ipv6: {}
+      Management1:
+        ipv4:
+          192.168.0.80:
+            prefix_length: 24
+        ipv6: {}
+  stderr: ''
+  stdout: ''
+```
 
+- Show one specific interface:
+```
+mab@mab-infra:/opt/stackstorm/packs/napalm$ sudo st2 run napalm.get_interfaces hostname=arista2 interface=Ethernet1
+.
+id: 590b447c7cae2209dd3470a6
+status: succeeded
+parameters: 
+  hostname: arista2
+  interface: Ethernet1
+result: 
+  exit_code: 0
+  result:
+    raw:
+      description: ''
+      is_enabled: true
+      is_up: true
+      last_flapped: 1493917720.2239988
+      mac_address: 00:0C:29:15:43:C8
+      name: Ethernet1
+      speed: 0
+  stderr: ''
+  stdout: ''
 ```
 
 - Show the counters for one specific interface:
 ```
-
+mab@mab-infra:/opt/stackstorm/packs/napalm$ sudo st2 run napalm.get_interfaces hostname=arista2 interface=Ethernet1 counters=true
+.
+id: 590b450e7cae2209dd3470ac
+status: succeeded
+parameters: 
+  counters: true
+  hostname: arista2
+  interface: Ethernet1
+result: 
+  exit_code: 0
+  result:
+    raw:
+      name: Ethernet1
+      rx_broadcast_packets: 20
+      rx_discards: 0
+      rx_errors: 0
+      rx_multicast_packets: 14
+      rx_octets: 4601
+      rx_unicast_packets: 11
+      tx_broadcast_packets: 0
+      tx_discards: 0
+      tx_errors: 0
+      tx_multicast_packets: 10
+      tx_octets: 2918
+      tx_unicast_packets: 12
+  stderr: ''
+  stdout: ''
 ```
 
 - Show the ARP table:
 ```
-
+mab@mab-infra:/opt/stackstorm/packs/napalm$ sudo st2 run napalm.get_arp_table hostname=arista2 
+.
+id: 590b45c87cae2209dd3470af
+status: succeeded
+parameters: 
+  hostname: arista2
+result: 
+  exit_code: 0
+  result:
+    raw:
+    - age: 0.0
+      interface: Ethernet1
+      ip: 172.16.0.10
+      mac: 00:0C:29:8F:3E:1B
+    - age: 0.0
+      interface: Management1
+      ip: 192.168.0.120
+      mac: 00:0C:29:BF:23:31
+  stderr: ''
+  stdout: ''
 ```
 
 - Show the LLDP neighbors:
 ```
-
-```
-
-- Obtain the BGP neighbors for a device:
-```
-
+mab@mab-infra:/opt/stackstorm/packs/napalm$ sudo st2 run napalm.get_lldp_neighbors hostname=arista2 
+.
+id: 590b45e47cae2209dd3470b2
+status: succeeded
+parameters: 
+  hostname: arista2
+result: 
+  exit_code: 0
+  result:
+    raw:
+      Ethernet1:
+      - hostname: vyatta1
+        port: 000c.298f.3e1b
+      Management1:
+      - hostname: vyatta1
+        port: 000c.298f.3e11
+  stderr: ''
+  stdout: ''
 ```
 
 ### Configuration & facts:
 - Show the running configuration on a device:
 ```
-
+mab@mab-infra:/opt/stackstorm/packs/napalm$ sudo st2 run napalm.get_config hostname=arista2 
+.
+id: 590b46007cae2209dd3470b5
+status: succeeded
+parameters: 
+  hostname: arista2
+result: 
+  exit_code: 0
+  result:
+    raw:
+      candidate: ''
+      running: "! Command: show running-config
+! device: localhost (vEOS, EOS-4.18.1F)
+!
+! boot system flash:EOS.swi
+!
+transceiver qsfp default-mode 4x10G
+!
+spanning-tree mode mstp
+!
+no aaa root
+!
+username admin role network-admin secret sha512 $6$FKgecSO3LaZ0QK61$jqarZagek1jrpzHAdTPvqxVVH37GcMujrtGyIbDm1717.Lbd3KZjF9LqyZ9Og/Sux6kvCfNbtKY2iMT/tS8Aa.
+!
+interface Ethernet1
+   no switchport
+   ip address 172.16.0.80/24
+!
+interface Management1
+   ip address 192.168.0.80/24
+!
+no ip routing
+!
+management api http-commands
+   no shutdown
+!
+end
+"
+      startup: "! Command: show startup-config
+! Startup-config last modified at  Thu May  4 16:59:30 2017 by admin
+! device: localhost (vEOS, EOS-4.18.1F)
+!
+! boot system flash:EOS.swi
+!
+transceiver qsfp default-mode 4x10G
+!
+spanning-tree mode mstp
+!
+no aaa root
+!
+username admin role network-admin secret sha512 $6$FKgecSO3LaZ0QK61$jqarZagek1jrpzHAdTPvqxVVH37GcMujrtGyIbDm1717.Lbd3KZjF9LqyZ9Og/Sux6kvCfNbtKY2iMT/tS8Aa.
+!
+interface Ethernet1
+   no switchport
+   ip address 172.16.0.80/24
+!
+interface Management1
+   ip address 192.168.0.80/24
+!
+no ip routing
+!
+management api http-commands
+   no shutdown
+!
+end
+"
+  stderr: ''
 ```
 
 - Perform a configuration consitency check (compare actual config to a golden config stored on a github repo):
@@ -912,11 +1204,65 @@ result:
 
 - Get the facts from on a device:
 ```
-
+mab@mab-infra:/opt/stackstorm/packs/napalm$ sudo st2 run napalm.get_facts hostname=arista2 
+.
+id: 590b46357cae2209dd3470b8
+status: succeeded
+parameters: 
+  hostname: arista2
+result: 
+  exit_code: 0
+  result:
+    raw:
+      fqdn: localhost
+      hostname: localhost
+      interface_list:
+      - Ethernet1
+      - Management1
+      model: vEOS
+      os_version: 4.18.1F-4591672.4181F
+      serial_number: ''
+      uptime: -6545
+      vendor: Arista
+  stderr: ''
+  stdout: ''
 ```
 
 ### Connectivity:
-- Perform a ping (to a specified destimation) on a device:
+- Perform a ping (to a specified destination) on a device:
+```
+mab@mab-infra:/opt/stackstorm/packs/napalm$ sudo st2 run napalm.ping hostname=arista2 destination=192.168.0.120
+.
+id: 590b475f7cae2209dd3470be
+status: failed
+parameters: 
+  destination: 192.168.0.120
+  hostname: arista2
+result: 
+  exit_code: 0
+  result: 'Error [1002]: CLI command 2 of 2 ''ping 192.168.0.120 timeout 2 size 100 repeat 5 source None'' failed: invalid command [Invalid input (at token 9: ''None'')]'
+  stderr: 'st2.actions.python.NapalmPing: ERROR    Error [1002]: CLI command 2 of 2 ''ping 192.168.0.120 timeout 2 size 100 repeat 5 source None'' failed: invalid command [Invalid input (at token 9: ''None'')]
+
+    '
+  stdout: 'NAPALM didn''t catch this exception. Please, fill a bugfix on https://github.com/napalm-automation/napalm/issues
+
+    Don''t forget to include this traceback.
+
+    '
+
+```
+
+- Get the BGP configuration from a device:
+```
+
+```
+
+- Obtain the BGP neighbors for a device:
+```
+
+```
+
+- Obtain the details on a specific BGP peering:
 ```
 
 ```
