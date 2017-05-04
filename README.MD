@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/mab27/st2_vyatta.svg?branch=master)](https://travis-ci.org/mab27/st2_vyatta)
-
 # NW Automation with NAPALM pack from StackStorm
 
 ## Content of the repo:
