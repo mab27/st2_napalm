@@ -70,7 +70,6 @@ class extract(Action):
         devices = data_loaded["devices"]
         # the value for that last key is a list of lists
 
-        # print devices
         hostname_list = list()
         driver_list = list()
 
@@ -83,22 +82,18 @@ class extract(Action):
         device_list = {}
         device_list = dict(zip(hostname_list, driver_list))
 
-        print device_list
-
         # Check that all hostname routers exists in the NAPALM config file
         ###################################################################
 
         try:
             east_Router_Driver = device_list.get(east_Router_Hostname)
             result['east_Router_Driver']=east_Router_Driver
-            # print east_Router_Driver
         except:
             return (False, "Missing entry for :" + east_Router_Hostname + "in the napalm.yaml file")
 
         try:
             west_Router_Driver = device_list.get(west_Router_Hostname)
             result['west_Router_Driver']=west_Router_Driver
-            # print west_Router_Driver
         except:
             return (False, "Missing entry for :" + west_Router_Hostname + "in the napalm.yaml file")
 

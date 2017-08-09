@@ -18,7 +18,6 @@ class render_cfg(Action):
         file.close()
 
         file=open(path_to_rendered_file,"r")
-        print file.read()
         file.close()
 
         result = dict.fromkeys(['rendered_file'])
