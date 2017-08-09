@@ -1,0 +1,25 @@
+routing-options {
+    router-id {{ router_Id }};
+    forwarding-table {
+        export bgp-ecmp;
+    }
+}
+protocols {
+    bgp {                               
+        group underlay {
+            type external;
+            import bgp-in;
+            export bgp-out;
+            local-as {{ local_ASN }};
+            multipath multiple-as;
+            neighbor {{ peer_IP }} {
+                peer-as {{ remote_ASN }};
+                description {{ remote_hostname }};
+            }
+        }
+    }
+    lldp {
+        interface all;
+        interface ge-0/0/0;
+    }
+}

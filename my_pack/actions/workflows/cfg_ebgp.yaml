@@ -45,6 +45,7 @@ workflows:
                     local_ASN: <% $.east_Local_ASN %>
                     remote_ASN: <% $.west_Local_ASN %>
                     peer_IP: <% $.east_Peer_IP %>
+                    remote_hostname: <% $.west_Router_Hostname %>
                 publish:
                     east_rendered_file: <% task(east_render).result.result.rendered_file %> 
                 on-success:
@@ -57,6 +58,7 @@ workflows:
                     local_ASN: <% $.west_Local_ASN %>
                     remote_ASN: <% $.east_Local_ASN %>
                     peer_IP: <% $.west_Peer_IP %>
+                    remote_hostname: <% $.east_Router_Hostname %>
                 publish:
                     west_rendered_file: <% task(west_render).result.result.rendered_file %> 
                 on-success:

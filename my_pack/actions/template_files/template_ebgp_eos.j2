@@ -1,0 +1,7 @@
+ip routing
+!
+router bgp {{ local_ASN }}
+   router-id {{ router_Id }}
+   neighbor {{ peer_IP }} remote-as {{ remote_ASN }}
+   neighbor {{ peer_IP }} description {{ remote_hostname }}
+!

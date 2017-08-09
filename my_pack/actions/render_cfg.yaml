@@ -31,3 +31,8 @@ parameters:
         description: Peer IP Address
         required: true
         position: 4
+    remote_hostname:
+        type: string
+        description: Hostname of the remote peer
+        required: true
+        position: 5
