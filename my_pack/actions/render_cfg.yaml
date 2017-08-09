@@ -1,0 +1,33 @@
+---
+name: render_cfg
+pack: default
+description: Render the configuration
+runner_type: python-script
+entry_point: "render_cfg.py"
+enabled: true
+parameters:
+    driver:
+        type: string
+        description: Driver type for the router
+        required: true
+        position: 0
+    router_Id:
+        type: string
+        description: Router ID
+        required: true
+        position: 1
+    local_ASN:
+        type: string
+        description: Local AS Number
+        required: true
+        position: 2
+    remote_ASN:
+        type: string
+        description: Remote AS Number
+        required: true
+        position: 3
+    peer_IP:
+        type: string
+        description: Peer IP Address
+        required: true
+        position: 4

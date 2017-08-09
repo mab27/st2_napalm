@@ -1,0 +1,18 @@
+---
+name: extract
+pack: default
+description: Extract information from the parameters object
+runner_type: python-script
+entry_point: "extract.py"
+enabled: true
+parameters:
+    eastRouter:
+        type: object
+        description: Information related to the East Router
+        required: true
+        position: 0
+    westRouter:
+        type: object
+        description: Information related to the West Router
+        required: true
+        position: 1

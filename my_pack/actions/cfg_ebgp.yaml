@@ -1,0 +1,23 @@
+---
+name: cfg_ebgp
+pack: default
+description: Configure an eBGP peering via NAPALM
+runner_type: mistral-v2
+entry_point: "workflows/cfg_ebgp.yaml"
+enabled: true
+parameters:
+    eastRouter:
+        type: object
+        description: Information related to the East Router
+        required: true
+        position: 0
+    westRouter:
+        type: object
+        description: Information related to the West Router
+        required: true
+        position: 1
+notify:
+  on-complete:
+    message: "\"@channel: Action succeeded.\""
+    routes:
+      - "slack"

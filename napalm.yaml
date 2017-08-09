@@ -1,0 +1,25 @@
+---
+html_table_class: napalm
+config_repo: https://github.com/mab27/st2_napalm_junos.git
+
+credentials:
+  core:
+    username: mab
+    password: mab123
+  edge:
+    username: admin
+    password: admin123
+
+devices:
+- hostname: vmx1
+  driver: junos
+  credentials: core
+- hostname: vmx2
+  driver: junos
+  credentials: core
+- hostname: arista1
+  driver: eos
+  credentials: edge
+- hostname: arista2
+  driver: eos
+  credentials: edge

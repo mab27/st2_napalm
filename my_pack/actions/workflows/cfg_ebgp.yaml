@@ -1,0 +1,89 @@
+## 1) Template the configuration by extracting the type of Vendor related to the name (found in the object parameter)
+
+## 2) Load-config        
+    ### (Pack = NAPALM)
+
+## 3) wait 5 seconds for the adv to be sent/received.
+
+## 4) Check BGP peering
+    ### (Pack = NAPALM)
+
+version: '2.0'
+name: default.cfg_ebgp
+description: Configure an eBGP peering via NAPALM
+workflows:
+    main:
+        type: direct
+        input:
+        - eastRouter
+        - westRouter
+        tasks:
+            extract:
+                action: default.extract 
+                input:
+                    eastRouter: <% $.eastRouter %>
+                    westRouter: <% $.westRouter %>
+                publish:
+                    east_Router_Hostname: <% task(extract).result.result.east_Router_Hostname %>
+                    east_Router_Driver: <% task(extract).result.result.east_Router_Driver %>
+                    east_Router_Id: <% task(extract).result.result.east_Router_Id %>
+                    east_Local_ASN: <% task(extract).result.result.east_Local_ASN %>
+                    east_Peer_IP: <% task(extract).result.result.east_Peer_IP %>
+                    west_Router_Hostname: <% task(extract).result.result.west_Router_Hostname %>
+                    west_Router_Driver: <% task(extract).result.result.west_Router_Driver %>
+                    west_Router_Id: <% task(extract).result.result.west_Router_Id %>
+                    west_Local_ASN: <% task(extract).result.result.west_Local_ASN %>
+                    west_Peer_IP: <% task(extract).result.result.west_Peer_IP %>
+                on-success:
+                    - east_render
+                    - west_render
+            east_render:
+                action: "default.render_cfg"
+                input:
+                    driver: <% $.east_Router_Driver %>
+                    router_Id: <% $.east_Router_Id %>
+                    local_ASN: <% $.east_Local_ASN %>
+                    remote_ASN: <% $.west_Local_ASN %>
+                    peer_IP: <% $.east_Peer_IP %>
+                publish:
+                    east_rendered_file: <% task(east_render).result.result.rendered_file %> 
+                on-success:
+                    - east_load
+            west_render:
+                action: "default.render_cfg"
+                input:
+                    driver: <% $.west_Router_Driver %>
+                    router_Id: <% $.west_Router_Id %>
+                    local_ASN: <% $.west_Local_ASN %>
+                    remote_ASN: <% $.east_Local_ASN %>
+                    peer_IP: <% $.west_Peer_IP %>
+                publish:
+                    west_rendered_file: <% task(west_render).result.result.rendered_file %> 
+                on-success:
+                    - west_load
+            east_load:
+                action: "napalm.loadconfig"
+                input:
+                    hostname: <% $.east_Router_Hostname %>
+                    config_file: <% $.east_rendered_file %>
+                on-success:
+                    - east_check
+            west_load:
+                action: "napalm.loadconfig"
+                input:
+                    hostname: <% $.west_Router_Hostname %>
+                    config_file: <% $.west_rendered_file %>
+                on-success:
+                    - west_check
+            east_check:
+                action: "napalm.get_bgp_neighbors"
+                wait-before: 15
+                input:
+                    hostname: <% $.east_Router_Hostname %>
+                    neighbor: <% $.eastRouter.peerIP %>
+            west_check:
+                action: "napalm.get_bgp_neighbors"
+                wait-before: 15
+                input:
+                    hostname: <% $.west_Router_Hostname %>
+                    neighbor: <% $.westRouter.peerIP %>
