@@ -1,7 +1,7 @@
 ---
 name: extract
 pack: default
-description: Extract information from the parameters object
+description: Extract data from object parameters
 runner_type: python-script
 entry_point: "extract.py"
 enabled: true

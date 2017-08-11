@@ -1,38 +1,54 @@
 ---
 name: render_cfg
 pack: default
-description: Render the configuration
+description: Render configuration file
 runner_type: python-script
 entry_point: "render_cfg.py"
 enabled: true
 parameters:
+    j2_loaction:
+        type: string
+        description: Location of the Jinja2 file
+        required: true
+        default: /opt/stackstorm/packs/default/actions/template_files
+        position: 0
+    feature_set:
+        type: string
+        description: Identifies the tempate to use by a feature keyword
+        required: true
+        position: 1
+        enum:
+            - cfg_ebgp
     driver:
         type: string
         description: Driver type for the router
         required: true
-        position: 0
+        position: 2
+        enum:
+            - junos
+            - eos
     router_Id:
         type: string
         description: Router ID
         required: true
-        position: 1
+        position: 3
     local_ASN:
         type: string
         description: Local AS Number
         required: true
-        position: 2
+        position: 4
     remote_ASN:
         type: string
         description: Remote AS Number
         required: true
-        position: 3
+        position: 5
     peer_IP:
         type: string
         description: Peer IP Address
         required: true
-        position: 4
+        position: 6
     remote_hostname:
         type: string
         description: Hostname of the remote peer
         required: true
-        position: 5
+        position: 7

@@ -1,7 +1,7 @@
 # NW Automation with NAPALM pack from StackStorm
 
 ## Content of the repo:
-- This repo contains information on how to implement network automation using NAPALM pack from StackStorm. The objective is to show how to use NAPALM Pack by manualy invoking actions and custom workflows as well as automatically trigger actions/workflows (via rules). The examples are based on two network OSs: Juniper Junos and Arista EOS. 
+- This repo contains information on how to implement network automation using NAPALM pack from StackStorm. The objective is to show how to use NAPALM Pack by manualy invoking actions and custom workflows as well as automatically trigger actions/workflows (via rules). The examples are performed against virtual appliances: Juniper vMX and Arista vEOS. Note that for Junos you might expect some different behaviours between vMX and vSRX. 
 	- For information, the st2 NAPALM pack is still in experimental state. Anticipate some display issues with some actions (for example different behaviour for same action on two different network OS).
 
 ## What is NAPALM?

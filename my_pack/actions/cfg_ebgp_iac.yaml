@@ -1,0 +1,26 @@
+---
+name: cfg_ebgp_iac
+pack: default
+description: Configure an eBGP peering via NAPALM - NW IaC
+runner_type: mistral-v2
+entry_point: "workflows/cfg_ebgp_iac.yaml"
+enabled: true
+parameters:
+    hosted_repo:
+        type: string
+        description: Source URI to clone a repository from
+        default: https://github.com/mab27/network_iac.git
+        required: true
+        position: 0
+    local_copy:
+        type: string
+        description: Local destination for the cloned repo
+        default: ~/automation/cloned_content/
+        # Be aware that ~ refers to /home/stanley.
+        required: true
+        position: 1
+notify:
+  on-complete:
+    message: "\"@channel: Action succeeded.\""
+    routes:
+      - "slack"

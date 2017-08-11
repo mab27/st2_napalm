@@ -1,0 +1,64 @@
+version: '2.0'
+name: default.cfg_ebgp_iac
+description: Configure eBGP peering - NW IaC mode
+workflows:
+  main:
+    type: direct
+    input:
+    - hosted_repo
+    - local_copy
+    tasks:
+      git_clone:
+        action: "git.clone"
+        input:
+          source: <% $.hosted_repo %>
+          destination: <% $.local_copy %>
+          hosts: localhost
+          sudo: true
+        on-success:
+          - get_east_obj
+          - get_west_obj
+
+      get_east_obj:
+        action: "default.file_to_obj"
+        input:
+          file_location: /home/stanley/automation/cloned_content/
+          file_name: "cfg_ebgp_iac.json"
+          key: "eastRouter"
+        publish:
+            eastRouter_obj: <% task(get_east_obj).result.result.eastRouter %>
+        on-success:
+            - cfg_ebgp
+        on-error:
+            - remove_local_content
+
+      get_west_obj:
+        action: "default.file_to_obj"
+        input:
+          file_location: /home/stanley/automation/cloned_content/
+          file_name: "cfg_ebgp_iac.json"
+          key: "westRouter"
+        publish:
+            westRouter_obj: <% task(get_west_obj).result.result.westRouter %>
+        on-success:
+            - cfg_ebgp
+        on-error:
+            - remove_local_content
+
+      cfg_ebgp:
+        join: all
+        action: "default.cfg_ebgp"
+        input:
+          eastRouter: <% $.eastRouter_obj %>
+          westRouter: <% $.westRouter_obj %>
+        on-complete:
+          - remove_local_content
+
+      remove_local_content:
+        join: one
+        action: "linux.rm"
+        input:
+            hosts: localhost
+            target: <% $.local_copy %>
+            recursive: true
+            sudo: true

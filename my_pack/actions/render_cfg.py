@@ -2,11 +2,12 @@ from jinja2 import Template
 from st2actions.runners.pythonrunner import Action
 
 
-class render_cfg(Action):
-    def run(self, driver, router_Id, local_ASN, remote_ASN, peer_IP, remote_hostname):
+class renderCfg(Action):
+    def run(self, j2_loaction, feature_set, driver, router_Id, local_ASN, remote_ASN, peer_IP, remote_hostname):
 
-        path_to_template_file = "/opt/stackstorm/packs/default/actions/template_files/template_ebgp_" + driver + ".j2"
-        path_to_rendered_file = "/opt/stackstorm/packs/default/actions/rendered_files/cfg_ebgp_" + driver +"_" + router_Id + "_.txt"
+        path_to_template_file = j2_loaction + "/" + feature_set + "/" + driver + ".j2"
+        path_to_rendered_file = "/home/mab/automation/generated_files/" + driver +"_" + feature_set + "_.txt"
+
 
         template_file=open(path_to_template_file)
         s=template_file.read()
@@ -15,9 +16,6 @@ class render_cfg(Action):
 
         file=open(path_to_rendered_file,"w")
         file.write(rendering)
-        file.close()
-
-        file=open(path_to_rendered_file,"r")
         file.close()
 
         result = dict.fromkeys(['rendered_file'])

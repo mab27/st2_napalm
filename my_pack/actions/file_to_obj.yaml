@@ -1,0 +1,28 @@
+---
+name: file_to_obj
+pack: default
+description: Extract individual variables from JSON file
+runner_type: run-python
+entry_point: "file_to_obj.py"
+enabled: true
+parameters:
+    file_location:
+        type: string
+        description: Directory location of the JSON file
+        required: true
+        position: 0
+    file_name:
+        type: string
+        description: Name of the JSON file
+        required: true
+        position: 1
+    key:
+        type: string
+        description: Key to look at in the JSON file
+        required: true
+        position: 2
+notify:
+  on-complete:
+    message: "\"@channel: Action succeeded.\""
+    routes:
+      - "slack"
