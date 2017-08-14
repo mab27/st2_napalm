@@ -1,0 +1,14 @@
+---
+name: github_commit_iac
+description: Fire cfg_ebgp_iac WF upon github commit.
+enabled: true
+trigger:
+  type: git.head_sha_monitor
+criteria:
+  trigger.committer:
+    pattern: mab27
+    type: equals
+action:
+  ref: default.cfg_ebgp_iac
+  parameters:
+    hosted_repo: "{{trigger.repository_url}}"
