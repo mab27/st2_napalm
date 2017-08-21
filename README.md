@@ -1,10 +1,12 @@
 # NW Automation with NAPALM pack from StackStorm
 
 ## Content of the repo:
-- This repo contains information on how to implement network automation using NAPALM pack from StackStorm. The objective is to illustrate how to use NAPALM pack on a network composed of different vendors. In this example we are doing it against Juniper and Arista devices. (virtual appliances: Juniper vMX and Arista vEOS).
+- This repo shows how to implement network automation using NAPALM pack from StackStorm. The objective is to illustrate how to implement network automation in a multi-vendor network.
+- As of now, the repo is focusing on one use-case (implementing an eBGP peering) and two network vendors (Arista and Juniper). Both the number of use-cases as well as the type of vendors can be expanded. The later is limited to a list of supported vendors by NAPALM, see NAPALM section below.
+- Some workflows in this repo uses information in the [network_iac repo](https://github.com/mab27/network_iac).
 - Nota:
-	- The st2 NAPALM pack is still in **experimental state**. Anticipate some display issues with some actions (for example different behaviour for same action on two different network OS).
-	- The tests on the Juniper side are done on a vMX. Results might slightly differ if you are using a vSRX or a vQFX.
+	- The st2 NAPALM pack is still in **experimental state**. Anticipate some display issues with some actions (for example different behavior for same action on two different network OS).
+	- The workflows have been written and tested against virtual appliances: Arista vEOS and Juniper vMX. For Juniper, expect some slight differences between vMX and other Juniper devices (like vSRX and vQFX).
 
 ## What is NAPALM?
 - [NAPALM](https://napalm.readthedocs.io/en/latest/index.html) stands for Network Automation and Programmability Abstraction Layer with Multivendor support.

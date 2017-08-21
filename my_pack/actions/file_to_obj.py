@@ -15,18 +15,3 @@ class fileToObj(Action):
         result[key] = obj
 
         return result
-
-
-        """
-        east_Router_Hostname = data_loaded["eastRouter"]["hostname"]
-        east_Router_Id = data_loaded["eastRouter"]["routerId"]
-        east_Local_ASN = data_loaded["eastRouter"]["localASN"]
-        east_Peer_IP = data_loaded["eastRouter"]["peerIP"]
-
-        west_Router_Hostname = data_loaded["westRouter"]["hostname"]
-        west_Router_Id = data_loaded["westRouter"]["routerId"]
-        west_Local_ASN = data_loaded["westRouter"]["localASN"]
-        west_Peer_IP = data_loaded["westRouter"]["peerIP"]
-        """
-
-        # return result
